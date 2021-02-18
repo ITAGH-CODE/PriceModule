@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <title>JS Chart</title>
+  </head>
+  <body>
+    <div class="container mt-5" style="height: auto;">
+        <div class="mb-3">
+            <label for="formFile" hidden class="form-label">Input excel file</label>
+            <input class="form-control" type="file" id="input">
+        </div>
+        <div class="row align-items-start">
+            <div class="col d-grid gap-5">
+                <div class="container border border-3" style="border-radius: 20px 20px;">
+                    <div class="row align-items-start" style="padding : 20px 20px;">
+                        <div class="col-8" style="text-align : left;">
+                            <h6>How many people work at your company</h6>
+                        </div>
+                        <div class="col-4" style="text-align : right;color:blue;">
+                            <h4 id="planValue">0</h4>
+                        </div>
+                    </div>
+                    <input type="range" class="form-range" min="0" max="500" step="1" value="0" id="planRange" onchange="updateTextInput(this.value,'plan');">
+                </div>
+                <div class="container border border-3" style="border-radius: 20px 20px;">
+                    <div class="row align-items-start" style="padding : 20px 20px;">
+                        <div class="col-8" style="text-align : left;">
+                            <h6>What is your current cost per hire ?</h6>
+                        </div>
+                        <div class="col-4" style="text-align : right;color:blue;">
+                            <h4 id="cphValue">1000</h4>
+                        </div>
+                    </div>
+                    <input type="range" class="form-range" min="1000" max="3000" step="10" value="1000" id="cphRange" onchange="updateTextInput(this.value,'cph');">
+                </div>
+                <div class="container border border-3" style="border-radius: 20px 20px;">
+                    <div class="row align-items-start">
+                        <div class="col-6 justify-content-center" style="text-align:center;">
+                            <button id="annually" type="button" class="btn btn-light">
+                                <h4>Annually</h4>
+                                <div class="border border-3 p-2" style="border-radius: 10px 10px;background-color: cadetblue;">
+                                    <h5>$1500</h5>
+                                </div> 
+                            </button>
+                        </div>
+                        <div class="col-6 justify-content-center" style="text-align:center;">
+                            <button id="quardely" type="button" class="btn btn-light ">
+                                <h4>Quardely</h4>
+                                <div class="border border-3 p-2" style="border-radius: 10px 10px;background-color: cadetblue;">
+                                    <h5>$1500</h5>
+                                </div> 
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col border border-3" style="border: 1px solid black;border-radius: 10px 10px;">
+                <div id="result">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <pre id="jsondata"></pre>
+        </div>
+    </div>
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/read-excel-file@4.x/bundle/read-excel-file.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
+    <script>
+
+        var currentPlan = 0;                // Variable that stores the selected value from the range (People work at your company) 
+        var currentCph = 1000;              // Variable that stores the selected value from the range (Cost Per Hire)
+        var averageHiresWithin90Days = 3;   // Variable that stores the average Hires within 90days (corresponds to a specific row in the table)
+        var jsonObject;                     // Variable that stores all the excel file in a json format.
+        let selectedFile;                   // Variable that stores the selected file (ROI_Pricing.xlsx).
+
+        let data=[{
+            "name":"jayanth",
+            "data":"scd",
+            "abc":"sdef"
+        }]
+        var input = document.getElementById('input');
+
+        var myTable = [];
+        var myRow;
+
+        if((selectedFile && !selectedFile.name.includes('ROI_Pricing.xlsx') || !selectedFile)){
+            document.getElementById("cphRange").setAttribute("disabled",true);
+            document.getElementById("planRange").setAttribute("disabled",true);
+        }
+
+
+        // Event triggered when loading the input excel file and populate the table. 
+        document.getElementById('input').addEventListener("change", (event) => {
+            selectedFile = event.target.files[0];
+            XLSX.utils.json_to_sheet(data, 'out.xlsx');
+            if(selectedFile && selectedFile.name.includes('ROI_Pricing.xlsx')){
+                document.getElementById("planRange").removeAttribute("disabled");
+                document.getElementById("cphRange").removeAttribute("disabled");
+                let fileReader = new FileReader();
+                fileReader.readAsBinaryString(selectedFile);
+                fileReader.onload = (event)=>{
+                    let data = event.target.result;
+                    let workbook = XLSX.read(data,{type:"binary"});
+                    var sheet3 = workbook.SheetNames[2];
+                    let rowObject = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheet3]);
+                    cph = rowObject[0].__EMPTY_29;
+                    for(let i = 1 ; i <= 10 ; i++){
+                        myRow = {'Plan':rowObject[i].__EMPTY_20,'Quartely':rowObject[i].__EMPTY_21,'Annually': rowObject[i].__EMPTY_22,'Save15': rowObject[i].__EMPTY_23,'Roi90DaysQ': rowObject[i].__EMPTY_24,'Roi90DaysA': rowObject[i].__EMPTY_25,'AverageHires90Days': rowObject[i].__EMPTY_26};
+                        myTable[i-1] = myRow;
+                    }
+                    jsonObject = myTable;
+                    FillTableResult(myTable);
+                }
+            }
+            else{
+                alert("Please select the file : ROI_Pricing.xlsx");
+                document.getElementById("cphRange").setAttribute("disabled",true);
+                document.getElementById("planRange").setAttribute("disabled",true);
+            }
+        });
+
+        function FillTableResult(jsonObject){
+            var result = '<table id="table-result" class="table caption-top"><thead><th>Users Connected to Intrro</th><th>Estimated Hires in 90 days</th><th>Estimated ROI within 90 days*</th><th>Price</th></thead><tbody>';
+            for(let i = 0 ; i < 10 ; i++){
+                result += '<tr class="myrow" id="tr_' + i + '"><td>' + jsonObject[i].Plan + '</td><td id="td'+ i +'1">$ ' + (Math.round(jsonObject[i].Roi90DaysQ*100)/100) + '</td><td id="td'+ i +'2">$ ' + (Math.round(jsonObject[i].Roi90DaysA*100)/100) + '</td><td>5500</td></tr>'
+            }
+            result += '</tbody></table>';
+            document.getElementById('result').innerHTML = result;
+        }
+
+        function updateTextInput(value, type){
+            if(type == 'cph'){
+                document.getElementById("cphValue").innerText = value;
+            }
+            else if(type == 'plan'){
+                document.getElementById("planValue").innerText = value;
+            }
+        }
+
+
+        // Event triggered While changing the number of people working at your company => Highlighted the corresponding range
+        document.getElementById('planRange').addEventListener("change", (event) => {
+            currentPlan = document.getElementById('planRange').value;
+            var myrows = document.querySelectorAll("table tr.myrow");
+            for (let i = 0; i < myrows.length; i++) {
+                myrows[i].removeAttribute("style");
+            }
+            if(currentPlan > 0 && currentPlan <= 50){
+                document.querySelector("table tr#tr_0").style.backgroundColor = "lightblue";
+            }
+            else if(currentPlan<=100){
+                document.querySelector("table tr#tr_1").style.backgroundColor = "lightblue";
+            }
+            else if(currentPlan<=150){
+                document.querySelector("table tr#tr_2").style.backgroundColor = "lightblue";
+            }
+            else if(currentPlan<=200){
+                document.querySelector("table tr#tr_3").style.backgroundColor = "lightblue";
+            }
+            else if(currentPlan<=250){
+                document.querySelector("table tr#tr_4").style.backgroundColor = "lightblue";
+            }
+            else if(currentPlan<=300){
+                document.querySelector("table tr#tr_5").style.backgroundColor = "lightblue";
+            }
+            else if(currentPlan<=350){
+                document.querySelector("table tr#tr_6").style.backgroundColor = "lightblue";
+            }
+            else if(currentPlan<=400){
+                document.querySelector("table tr#tr_7").style.backgroundColor = "lightblue";
+            }
+            else if(currentPlan<=450){
+                document.querySelector("table tr#tr_8").style.backgroundColor = "lightblue";
+            }
+            else if(currentPlan<=500){
+                document.querySelector("table tr#tr_9").style.backgroundColor = "lightblue";
+            }
+        });
+
+
+        // Event triggered when changing the Cost Per Hire => Modifying table values 
+        document.getElementById('cphRange').addEventListener("change", (event) => {
+            currentCph = document.getElementById('cphRange').value;
+            for(let i = 0; i < 10 ; i++){
+                jsonObject[i].Roi90DaysA = (Math.round(((jsonObject[i].AverageHires90Days*currentCph) - jsonObject[i].Annually)*100)/100);
+                document.getElementById("td"+ i + "2").innerHTML = "$ " + (Math.round(((jsonObject[i].AverageHires90Days*currentCph) - jsonObject[i].Annually)*100)/100);
+                
+                jsonObject[i].Roi90DaysQ = (Math.round((jsonObject[i].Roi90DaysA - jsonObject[i].Save15)*100)/100);
+                document.getElementById("td"+ i + "1").innerHTML = "$ " + (Math.round((jsonObject[i].Roi90DaysA - jsonObject[i].Save15)*100)/100);
+            }
+        });
+
+
+
+    </script>
+  </body>
+</html>
