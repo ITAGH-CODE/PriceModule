@@ -100,7 +100,7 @@
         var myTable = [];
         var myRow;
 
-        if((selectedFile && !selectedFile.name.includes('ROI_Pricing.xlsx') || !selectedFile)){
+        if(!selectedFile){
             document.getElementById("cphRange").setAttribute("disabled",true);
             document.getElementById("planRange").setAttribute("disabled",true);
             document.getElementById("annually").setAttribute("disabled",true);
@@ -112,7 +112,7 @@
         document.getElementById('input').addEventListener("change", (event) => {
             selectedFile = event.target.files[0];
             XLSX.utils.json_to_sheet(data, 'out.xlsx');
-            if(selectedFile && selectedFile.name.includes('ROI_Pricing.xlsx')){
+            if(selectedFile){
                 document.getElementById("planRange").removeAttribute("disabled");
                 document.getElementById("cphRange").removeAttribute("disabled");
                 document.getElementById("annually").removeAttribute("disabled");
