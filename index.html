@@ -140,6 +140,9 @@
                 document.getElementById("annually").setAttribute("disabled",true);
                 document.getElementById("quartely").setAttribute("disabled",true);
             }
+
+            document.getElementById("planRange").value = 0;updateTextInput(0, 'plan');
+            document.getElementById("cphRange").value = 1000;updateTextInput(1000, 'cph');
         });
 
         function FillTableResult(jsonObject){
