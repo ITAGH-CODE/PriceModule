@@ -113,10 +113,12 @@
             selectedFile = event.target.files[0];
             XLSX.utils.json_to_sheet(data, 'out.xlsx');
             if(selectedFile){
-                document.getElementById("planRange").removeAttribute("disabled");
-                document.getElementById("cphRange").removeAttribute("disabled");
-                document.getElementById("annually").removeAttribute("disabled");
-                document.getElementById("quartely").removeAttribute("disabled");
+                // document.getElementById("planRange").removeAttribute("disabled");
+                // document.getElementById("cphRange").removeAttribute("disabled");
+                // document.getElementById("annually").removeAttribute("disabled");
+                // document.getElementById("quartely").removeAttribute("disabled");
+                enableRanges();
+                enablePaymentMethod();
                 let fileReader = new FileReader();
                 fileReader.readAsBinaryString(selectedFile);
                 fileReader.onload = (event)=>{
@@ -135,14 +137,14 @@
             }
             else{
                 alert("Please select the file : ROI_Pricing.xlsx");
-                document.getElementById("cphRange").setAttribute("disabled",true);
-                document.getElementById("planRange").setAttribute("disabled",true);
-                document.getElementById("annually").setAttribute("disabled",true);
-                document.getElementById("quartely").setAttribute("disabled",true);
+                disableRanges();
+                disablePaymentMethod();
+                // document.getElementById("cphRange").setAttribute("disabled",true);
+                // document.getElementById("planRange").setAttribute("disabled",true);
+                // document.getElementById("annually").setAttribute("disabled",true);
+                // document.getElementById("quartely").setAttribute("disabled",true);
             }
-
-            document.getElementById("planRange").value = 0;updateTextInput(0, 'plan');
-            document.getElementById("cphRange").value = 1000;updateTextInput(1000, 'cph');
+            initModule();
         });
 
         function FillTableResult(jsonObject){
@@ -204,6 +206,33 @@
             document.getElementById("annually").style.border = "";
 
         });
+
+        function enableRanges(){
+            document.getElementById("cphRange").removeAttribute("disabled");
+            document.getElementById("planRange").removeAttribute("disabled");
+        }
+
+        function disableRanges(){
+            document.getElementById("cphRange").setAttribute("disabled",true);
+            document.getElementById("planRange").setAttribute("disabled",true);
+        }
+
+        function enablePaymentMethod(){
+            document.getElementById("annually").removeAttribute("disabled");
+            document.getElementById("quartely").removeAttribute("disabled");
+        }
+
+        function disablePaymentMethod(){
+            document.getElementById("annually").setAttribute("disabled",true);
+            document.getElementById("quartely").setAttribute("disabled",true);
+        }
+
+        function initModule(){
+            document.getElementById("planRange").value = 0;
+            updateTextInput(0, 'plan');
+            document.getElementById("cphRange").value = 1000;
+            updateTextInput(1000, 'cph');
+        }
 
 
 
