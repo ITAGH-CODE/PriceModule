@@ -101,10 +101,8 @@
         var myRow;
 
         if(!selectedFile){
-            document.getElementById("cphRange").setAttribute("disabled",true);
-            document.getElementById("planRange").setAttribute("disabled",true);
-            document.getElementById("annually").setAttribute("disabled",true);
-            document.getElementById("quartely").setAttribute("disabled",true);
+            disableRanges();
+            disablePaymentMethod();
         }
 
 
@@ -113,10 +111,6 @@
             selectedFile = event.target.files[0];
             XLSX.utils.json_to_sheet(data, 'out.xlsx');
             if(selectedFile){
-                // document.getElementById("planRange").removeAttribute("disabled");
-                // document.getElementById("cphRange").removeAttribute("disabled");
-                // document.getElementById("annually").removeAttribute("disabled");
-                // document.getElementById("quartely").removeAttribute("disabled");
                 enableRanges();
                 enablePaymentMethod();
                 let fileReader = new FileReader();
@@ -139,10 +133,6 @@
                 alert("Please select the file : ROI_Pricing.xlsx");
                 disableRanges();
                 disablePaymentMethod();
-                // document.getElementById("cphRange").setAttribute("disabled",true);
-                // document.getElementById("planRange").setAttribute("disabled",true);
-                // document.getElementById("annually").setAttribute("disabled",true);
-                // document.getElementById("quartely").setAttribute("disabled",true);
             }
             initModule();
         });
