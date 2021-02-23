@@ -85,10 +85,11 @@
     <script>
 
         var currentPlan = 0;                // Variable that stores the selected value from the range (People work at your company) 
-        var currentCph = 1000;              // Variable that stores the selected value from the range (Cost Per Hire)
+        var currentCph = 1000;             // Variable that stores the selected value from the range (Cost Per Hire)
         var averageHiresWithin90Days = 3;   // Variable that stores the average Hires within 90days (corresponds to a specific row in the table)
         var jsonObject;                     // Variable that stores all the excel file in a json format.
         let selectedFile;                   // Variable that stores the selected file (ROI_Pricing.xlsx).
+        var isQuarterly = true;
 
         let data=[{
             "name":"jayanth",
@@ -122,11 +123,13 @@
                     let rowObject = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheet3]);
                     cph = rowObject[0].__EMPTY_29;
                     for(let i = 1 ; i <= 10 ; i++){
-                        myRow = {'Plan':rowObject[i].__EMPTY_20,'Quartely':rowObject[i].__EMPTY_21,'Annually': rowObject[i].__EMPTY_22,'Save15': rowObject[i].__EMPTY_23,'Roi90DaysQ': rowObject[i].__EMPTY_24,'Roi90DaysA': rowObject[i].__EMPTY_25,'AverageHires90Days': rowObject[i].__EMPTY_26};
+                        myRow = {'Plan':rowObject[i].__EMPTY_20,'Quartely':rowObject[i].__EMPTY_21,'Annually': rowObject[i].__EMPTY_22,'Save15': rowObject[i].__EMPTY_23,'Roi90DaysQ': rowObject[i].__EMPTY_24,'Roi90DaysA': rowObject[i].__EMPTY_25,'AverageHires90Days': rowObject[i].__EMPTY_26,'Price': rowObject[i].__EMPTY_21};
                         myTable[i-1] = myRow;
                     }
                     jsonObject = myTable;
+                    initializePaymentPeriod();
                     FillTableResult(myTable);
+                    document.querySelector("table tr#tr_0").style.backgroundColor = "lightblue";
                 }
             }
             else{
@@ -140,7 +143,7 @@
         function FillTableResult(jsonObject){
             var result = '<table id="table-result" class="table caption-top"><thead><th>Users Connected to Intrro</th><th>Estimated Hires in 90 days</th><th>Estimated ROI within 90 days*</th><th>Price</th></thead><tbody>';
             for(let i = 0 ; i < 10 ; i++){
-                result += '<tr class="myrow" id="tr_' + i + '"><td>' + jsonObject[i].Plan + '</td><td id="td'+ i +'1">$ ' + (Math.round(jsonObject[i].Roi90DaysQ*100)/100) + '</td><td id="td'+ i +'2">$ ' + (Math.round(jsonObject[i].Roi90DaysA*100)/100) + '</td><td>5500</td></tr>'
+                result += '<tr class="myrow" id="tr_' + i + '"><td>' + jsonObject[i].Plan + '</td><td id="td'+ i +'1">$ ' + (Math.round(jsonObject[i].Roi90DaysQ*100)/100) + '</td><td id="td'+ i +'2">$ ' + (Math.round(jsonObject[i].Roi90DaysA*100)/100) + '</td><td id="td'+ i +'">'+ (Math.round(jsonObject[i].Price*100)/100) +'</td></tr>'
             }
             result += '</tbody></table>';
             document.getElementById('result').innerHTML = result;
@@ -186,16 +189,33 @@
         });
 
 
+        // Event triggered to calculate the price when clicking on Annually (To be confirmed with Neel)
         document.getElementById("annually").addEventListener("click",(event) => {
+            isQuarterly = false;
             document.getElementById("annually").style.border = "medium solid blue";
             document.getElementById("quartely").style.border = "";
+            setNewPrice();
         });
 
+
+        // Event triggered to calculate the price when clicking on Querterly (To be confirmed with Neel)
         document.getElementById("quartely").addEventListener("click",(event) => {
+            isQuarterly = true;
             document.getElementById("quartely").style.border = "medium solid blue";
             document.getElementById("annually").style.border = "";
-
+            setNewPrice();
         });
+
+        function setNewPrice(){
+            for(let i = 0; i < 10 ; i++){
+                var currentPrice;
+                if(isQuarterly)
+                    currentPrice = (Math.round(jsonObject[i].Quartely*100)/100);
+                else
+                    currentPrice = (Math.round((jsonObject[i].Annually - jsonObject[i].Save15)*100)/100);
+                document.getElementById("td" + i).innerText = currentPrice;
+            }
+        }
 
         function enableRanges(){
             document.getElementById("cphRange").removeAttribute("disabled");
@@ -222,6 +242,11 @@
             updateTextInput(0, 'plan');
             document.getElementById("cphRange").value = 1000;
             updateTextInput(1000, 'cph');
+        }
+
+        function initializePaymentPeriod(){
+            document.getElementById("quartely").style.border = "medium solid blue";
+            document.getElementById("annually").style.border = "";
         }
 
 
