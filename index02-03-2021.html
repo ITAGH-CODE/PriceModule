@@ -143,7 +143,7 @@
         function FillTableResult(jsonObject){
             var result = '<table id="table-result" class="table caption-top"><thead><th>Users Connected to Intrro</th><th>Estimated Hires in 90 days</th><th>Estimated ROI within 90 days*</th><th>Price</th></thead><tbody>';
             for(let i = 0 ; i < 10 ; i++){
-                result += '<tr class="myrow" id="tr_' + i + '"><td>' + jsonObject[i].Plan + '</td><td id="td'+ i +'1">' + Math.round(jsonObject[i].AverageHires90Days) + '</td><td id="td'+ i +'2">$ ' + (Math.round(jsonObject[i].Roi90DaysQ*100)/100) + '</td><td id="td'+ i +'">'+ (Math.round(jsonObject[i].Price*100)/100) +'</td></tr>'
+                result += '<tr class="myrow" id="tr_' + i + '"><td>' + jsonObject[i].Plan + '</td><td id="td'+ i +'1">$ ' + (Math.round(jsonObject[i].Roi90DaysQ*100)/100) + '</td><td id="td'+ i +'2">$ ' + (Math.round(jsonObject[i].Roi90DaysA*100)/100) + '</td><td id="td'+ i +'">'+ (Math.round(jsonObject[i].Price*100)/100) +'</td></tr>'
             }
             result += '</tbody></table>';
             document.getElementById('result').innerHTML = result;
@@ -180,16 +180,11 @@
         document.getElementById('cphRange').addEventListener("change", (event) => {
             currentCph = document.getElementById('cphRange').value;
             for(let i = 0; i < 10 ; i++){
-                if(isQuarterly){
-                    jsonObject[i].Roi90DaysQ = (Math.round((jsonObject[i].Roi90DaysA - jsonObject[i].Save15)*100)/100);
-                    document.getElementById("td" + i + "2").innerText = "$ " + (Math.round(jsonObject[i].Roi90DaysQ*100)/100);
-                    document.getElementById("td"+ i + "1").innerHTML = "$ " + (Math.round((jsonObject[i].Roi90DaysA - jsonObject[i].Save15)*100)/100);
-                }
-                else{
-                    jsonObject[i].Roi90DaysA = (Math.round(((jsonObject[i].AverageHires90Days*currentCph) - jsonObject[i].Annually)*100)/100);
-                    document.getElementById("td" + i + "2").innerText = "$ " + (Math.round(jsonObject[i].Roi90DaysA*100)/100);
-                    document.getElementById("td"+ i + "2").innerHTML = "$ " + (Math.round(((jsonObject[i].AverageHires90Days*currentCph) - jsonObject[i].Annually)*100)/100);
-                }             
+                jsonObject[i].Roi90DaysA = (Math.round(((jsonObject[i].AverageHires90Days*currentCph) - jsonObject[i].Annually)*100)/100);
+                document.getElementById("td"+ i + "2").innerHTML = "$ " + (Math.round(((jsonObject[i].AverageHires90Days*currentCph) - jsonObject[i].Annually)*100)/100);
+                
+                jsonObject[i].Roi90DaysQ = (Math.round((jsonObject[i].Roi90DaysA - jsonObject[i].Save15)*100)/100);
+                document.getElementById("td"+ i + "1").innerHTML = "$ " + (Math.round((jsonObject[i].Roi90DaysA - jsonObject[i].Save15)*100)/100);
             }
         });
 
@@ -212,20 +207,13 @@
         });
 
         function setNewPrice(){
-            var currentPrice;
-            if(isQuarterly){
-                for(let i = 0; i < 10 ; i++){
-                    document.getElementById("td" + i + "2").innerText = "$ " + (Math.round(jsonObject[i].Roi90DaysQ*100)/100);
+            for(let i = 0; i < 10 ; i++){
+                var currentPrice;
+                if(isQuarterly)
                     currentPrice = (Math.round(jsonObject[i].Quartely*100)/100);
-                    document.getElementById("td" + i).innerText = currentPrice;
-                }       
-            }
-            else{
-                for(let i = 0; i < 10 ; i++){
-                    document.getElementById("td" + i + "2").innerText = "$ " + (Math.round(jsonObject[i].Roi90DaysA*100)/100);
-                    currentPrice = (Math.round((jsonObject[i].Annually - jsonObject[i].Save15)*100)/100);  
-                    document.getElementById("td" + i).innerText = currentPrice;
-                } 
+                else
+                    currentPrice = (Math.round((jsonObject[i].Annually - jsonObject[i].Save15)*100)/100);
+                document.getElementById("td" + i).innerText = currentPrice;
             }
         }
 
