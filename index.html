@@ -141,9 +141,10 @@
         });
 
         function FillTableResult(jsonObject){
+            var arrRanges = [1,51,101,151,201,251,301,351,401,451];
             var result = '<table id="table-result" class="table caption-top"><thead><th>Users Connected to Intrro</th><th>Estimated Hires in 90 days</th><th>Estimated ROI within 90 days*</th><th>Price</th></thead><tbody>';
             for(let i = 0 ; i < 10 ; i++){
-                result += '<tr class="myrow" id="tr_' + i + '"><td>' + jsonObject[i].Plan + '</td><td id="td'+ i +'1">' + Math.round(jsonObject[i].AverageHires90Days) + '</td><td id="td'+ i +'2">$ ' + (Math.round(jsonObject[i].Roi90DaysQ*100)/100) + '</td><td id="td'+ i +'">'+ (Math.round(jsonObject[i].Price*100)/100) +'</td></tr>'
+                result += '<tr class="myrow" id="tr_' + i + '"><td>' + arrRanges[i] + ' - ' + jsonObject[i].Plan + '</td><td id="td'+ i +'1">' + Math.round(jsonObject[i].AverageHires90Days) + '</td><td id="td'+ i +'2">$ ' + (Math.round(jsonObject[i].Roi90DaysQ*100)/100) + '</td><td id="td'+ i +'">'+ (Math.round(jsonObject[i].Price*100)/100) +'</td></tr>'
             }
             result += '</tbody></table>';
             document.getElementById('result').innerHTML = result;
