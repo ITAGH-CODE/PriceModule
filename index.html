@@ -9,7 +9,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
     <style>
         #annuallyPrice,#quartelyPrice{
-            color : blue;
             font-weight: bold;
         }
         #quartely,#annually{
@@ -51,15 +50,15 @@
                 <div class="container">
                     <h6>How do you want to pay ?</h6>
                     <div class="row align-items-start justify-content-center">
-                        <div id="payment-method1" class="col-4 justify-content-center border-2 p-3" style="text-align:center;border-radius: 20px 20px;margin-right:20px;">
+                        <div id="payment-method1" class="col-4 justify-content-center border border-2 p-3" style="text-align:center;border-radius: 20px 20px;margin-right:20px;">
                             <div id="annually" type="button">
                                 <h4>Annually</h4>
-                                <div class="border border-2 p-3" style="border-radius: 10px 10px;background-color: lightblue;">
+                                <div class="border border border-2 p-3" style="border-radius: 10px 10px;background-color: lightblue;">
                                     <span id="annuallyPrice" class="label label-info">$ 2550,00</span>
                                 </div> 
                             </div>
                         </div>
-                        <div id="payment-method2" class="col-4 justify-content-center border-2 p-3" style="text-align:center;border-radius: 20px 20px;">
+                        <div id="payment-method2" class="col-4 justify-content-center border border-2 p-3" style="text-align:center;border-radius: 20px 20px;">
                             <div id="quartely" type="button">
                                 <h4>Quardely</h4>
                                 <div class="border border-2 p-3" style="border-radius: 10px 10px;background-color: lightblue;">
@@ -182,15 +181,14 @@
             currentCph = document.getElementById('cphRange').value;
             for(let i = 0; i < 10 ; i++){
                 if(isQuarterly){
+                    jsonObject[i].Roi90DaysA = (Math.round(((jsonObject[i].AverageHires90Days*currentCph) - jsonObject[i].Annually)*100)/100);
                     jsonObject[i].Roi90DaysQ = (Math.round((jsonObject[i].Roi90DaysA - jsonObject[i].Save15)*100)/100);
                     document.getElementById("td" + i + "2").innerText = "$ " + (Math.round(jsonObject[i].Roi90DaysQ*100)/100);
-                    document.getElementById("td"+ i + "1").innerHTML = "$ " + (Math.round((jsonObject[i].Roi90DaysA - jsonObject[i].Save15)*100)/100);
                 }
                 else{
                     jsonObject[i].Roi90DaysA = (Math.round(((jsonObject[i].AverageHires90Days*currentCph) - jsonObject[i].Annually)*100)/100);
                     document.getElementById("td" + i + "2").innerText = "$ " + (Math.round(jsonObject[i].Roi90DaysA*100)/100);
-                    document.getElementById("td"+ i + "2").innerHTML = "$ " + (Math.round(((jsonObject[i].AverageHires90Days*currentCph) - jsonObject[i].Annually)*100)/100);
-                }             
+                }          
             }
         });
 
@@ -198,6 +196,8 @@
         // Event triggered to calculate the price when clicking on Annually (To be confirmed with Neel)
         document.getElementById("annually").addEventListener("click",(event) => {
             isQuarterly = false;
+            document.getElementById("payment-method1").classList.remove("border");
+            document.getElementById("payment-method2").classList.add("border");
             document.getElementById("payment-method1").style.border = "medium solid blue";
             document.getElementById("payment-method2").style.border = "";
             setNewPrice();
@@ -207,6 +207,8 @@
         // Event triggered to calculate the price when clicking on Querterly (To be confirmed with Neel)
         document.getElementById("quartely").addEventListener("click",(event) => {
             isQuarterly = true;
+            document.getElementById("payment-method2").classList.remove("border");
+            document.getElementById("payment-method1").classList.add("border");
             document.getElementById("payment-method2").style.border = "medium solid blue";
             document.getElementById("payment-method1").style.border = "";
             setNewPrice();
@@ -258,6 +260,7 @@
         }
 
         function initializePaymentPeriod(){
+            document.getElementById("payment-method2").classList.remove("border");
             document.getElementById("payment-method2").style.border = "medium solid blue";
             document.getElementById("payment-method1").style.border = "";
         }
