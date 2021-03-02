@@ -26,7 +26,7 @@
         </div>
         <div class="row align-items-start">
             <div class="col d-grid gap-5">
-                <div class="container border border-3" style="border-radius: 20px 20px;">
+                <div class="container border border-2" style="border-radius: 20px 20px;">
                     <div class="row align-items-start" style="padding : 20px 20px;">
                         <div class="col-8" style="text-align : left;">
                             <h6>How many people work at your company ?</h6>
@@ -37,7 +37,7 @@
                     </div>
                     <input type="range" class="form-range" min="0" max="500" step="1" value="0" id="planRange" onchange="updateTextInput(this.value,'plan');">
                 </div>
-                <div class="container border border-3" style="border-radius: 20px 20px;">
+                <div class="container border border-2" style="border-radius: 20px 20px;">
                     <div class="row align-items-start" style="padding : 20px 20px;">
                         <div class="col-8" style="text-align : left;">
                             <h6>What is your current cost per hire ?</h6>
@@ -51,26 +51,26 @@
                 <div class="container">
                     <h6>How do you want to pay ?</h6>
                     <div class="row align-items-start justify-content-center">
-                        <div class="col-4 justify-content-center border border-3 p-3" style="text-align:center;border-radius: 20px 20px;margin-right:20px;">
-                            <button id="annually" type="button" class="btn btn-light">
+                        <div class="col-4 justify-content-center border border-2 p-3" style="text-align:center;border-radius: 20px 20px;margin-right:20px;">
+                            <div id="annually" type="button">
                                 <h4>Annually</h4>
-                                <div class="border border-3 p-3" style="border-radius: 10px 10px;background-color: lightblue;">
+                                <div class="border border-2 p-3" style="border-radius: 10px 10px;background-color: lightblue;">
                                     <span id="annuallyPrice" class="label label-info">$ 2550,00</span>
                                 </div> 
-                            </button>
+                            </div>
                         </div>
-                        <div class="col-4 justify-content-center border border-3 p-3" style="text-align:center;border-radius: 20px 20px;">
-                            <button id="quartely" type="button" class="btn btn-light ">
+                        <div class="col-4 justify-content-center border border-2 p-3" style="text-align:center;border-radius: 20px 20px;">
+                            <div id="quartely" type="button">
                                 <h4>Quardely</h4>
-                                <div class="border border-3 p-3" style="border-radius: 10px 10px;background-color: lightblue;">
+                                <div class="border border-2 p-3" style="border-radius: 10px 10px;background-color: lightblue;">
                                     <span id="quartelyPrice" class="label label-info">$ 750</span>
                                 </div> 
-                            </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col border border-3" style="border: 1px solid black;border-radius: 10px 10px;">
+            <div class="col border border-2" style="border: 1px solid black;border-radius: 10px 10px;">
                 <div id="result">
                     <table id="table-result" class="table caption-top"><thead><th>Users Connected to Intrro</th><th>Estimated Hires in 90 days</th><th>Estimated ROI within 90 days*</th><th>Price</th></thead><tbody>
                 </div>
