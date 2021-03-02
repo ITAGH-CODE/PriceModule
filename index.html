@@ -51,7 +51,7 @@
                 <div class="container">
                     <h6>How do you want to pay ?</h6>
                     <div class="row align-items-start justify-content-center">
-                        <div class="col-4 justify-content-center border border-2 p-3" style="text-align:center;border-radius: 20px 20px;margin-right:20px;">
+                        <div id="payment-method1" class="col-4 justify-content-center border-2 p-3" style="text-align:center;border-radius: 20px 20px;margin-right:20px;">
                             <div id="annually" type="button">
                                 <h4>Annually</h4>
                                 <div class="border border-2 p-3" style="border-radius: 10px 10px;background-color: lightblue;">
@@ -59,7 +59,7 @@
                                 </div> 
                             </div>
                         </div>
-                        <div class="col-4 justify-content-center border border-2 p-3" style="text-align:center;border-radius: 20px 20px;">
+                        <div id="payment-method2" class="col-4 justify-content-center border-2 p-3" style="text-align:center;border-radius: 20px 20px;">
                             <div id="quartely" type="button">
                                 <h4>Quardely</h4>
                                 <div class="border border-2 p-3" style="border-radius: 10px 10px;background-color: lightblue;">
@@ -198,8 +198,8 @@
         // Event triggered to calculate the price when clicking on Annually (To be confirmed with Neel)
         document.getElementById("annually").addEventListener("click",(event) => {
             isQuarterly = false;
-            document.getElementById("annually").style.border = "medium solid blue";
-            document.getElementById("quartely").style.border = "";
+            document.getElementById("payment-method1").style.border = "medium solid blue";
+            document.getElementById("payment-method2").style.border = "";
             setNewPrice();
         });
 
@@ -207,8 +207,8 @@
         // Event triggered to calculate the price when clicking on Querterly (To be confirmed with Neel)
         document.getElementById("quartely").addEventListener("click",(event) => {
             isQuarterly = true;
-            document.getElementById("quartely").style.border = "medium solid blue";
-            document.getElementById("annually").style.border = "";
+            document.getElementById("payment-method2").style.border = "medium solid blue";
+            document.getElementById("payment-method1").style.border = "";
             setNewPrice();
         });
 
@@ -258,8 +258,8 @@
         }
 
         function initializePaymentPeriod(){
-            document.getElementById("quartely").style.border = "medium solid blue";
-            document.getElementById("annually").style.border = "";
+            document.getElementById("payment-method2").style.border = "medium solid blue";
+            document.getElementById("payment-method1").style.border = "";
         }
 
 
